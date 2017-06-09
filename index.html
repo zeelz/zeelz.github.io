@@ -1,1 +1,127 @@
-Hello world
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fresh Start Counter</title>
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Maven+Pro" rel="stylesheet">
+    <style type="text/css">
+        html {
+            margin: 0;
+            padding: 0;
+            font-size: 100%;
+        }
+        body {
+            background-color: #1f8dd6;
+        }
+        .container {
+            margin: 20% auto 0;
+            width: 40%;
+            color: #FFF;
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            font-size: 10em;
+            font-family: 'Archivo Black';
+            margin: 5px;
+            line-height: 1em;
+        }
+        p {
+            font-size: 2.5em;
+            letter-spacing: 1px;
+            margin: 0;
+            padding: 10px;
+            font-family: 'Maven Pro';
+            border: solid 1px #FFF;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        #author, #author a {
+            font-size: 1em;
+            letter-spacing: 1px;
+            padding: 5px;
+            font-family: 'Maven Pro';
+            color: #FFF;
+        }
+        #author a {
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">           
+                <h1 id="show-days"></h1>
+                <p id="minsec"></p>
+                <div id="author">
+                    created by <a href="https://twitter.com/zeelz">@zeelz</a>
+                </div>
+            
+        
+</div>
+<script type="text/javascript">
+    
+/* Fresh Start Counter */
+
+var freshStartTime = new Date("June 8, 2017 23:30:00");
+
+function refresh()
+{
+
+    var now = new Date();
+
+    var timeElapsed = now - freshStartTime;
+    var days = timeElapsed / (1000 * 60 * 60 * 24);
+    var daysFloored = Math.floor(days);
+
+   /*var hours;
+    if (daysFloored == 0)
+    {
+        hours = days * 24;
+    } else
+    {
+        hours = (days % daysFloored) * 24;
+    }
+    var hoursFloored = Math.floor(hours);*/
+
+    
+    var hours = convertTime(days, daysFloored, 24).newFloating;
+    var hoursFloored = convertTime(days, daysFloored, 24).newFloored;
+
+    var mins = convertTime(hours, hoursFloored, 60).newFloating;
+    var minsFloored = convertTime(hours, hoursFloored, 60).newFloored;
+
+    var secs = convertTime(mins, minsFloored, 60).newFloating;
+    var secsFloored = convertTime(mins, minsFloored, 60).newFloored;
+
+    var days = document.getElementById('show-days').innerHTML = daysFloored;
+    document.getElementById('minsec').innerHTML = formatted(hoursFloored) + ":" + formatted(minsFloored) + ":" + formatted(secsFloored);
+
+}
+
+setInterval( refresh, 1000);
+
+function convertTime( floating, floored, unit){
+        //var newFloating;
+
+        if (floored == 0)
+        {
+            newFloating = floating * unit;
+        } else
+        {
+            newFloating = (floating % floored) * unit;
+        }
+        return {
+            'newFloating' : newFloating,
+            'newFloored' : Math.floor(newFloating)
+        }
+    }
+function formatted(arg)
+{
+    return ("0" + arg).slice(-2);
+}
+
+</script>
+</body>
+</html>
+
