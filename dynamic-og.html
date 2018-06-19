@@ -32,16 +32,17 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 	 
-FB.ui({
-  method: 'share_open_graph',
-  action_type: 'og.likes',
-  action_properties: JSON.stringify({
-    object:'https://developers.facebook.com/docs/javascript/examples',
-  })
-}, function(response){
-  // Debug response (optional)
-  console.log(response);
+FB.login(function(response) {
+    if (response.authResponse) {
+     console.log('Welcome!  Fetching your information.... ');
+     FB.api('/me', function(response) {
+       console.log('Good to see you, ' + response.name + '.');
+     });
+    } else {
+     console.log('User cancelled login or did not fully authorize.');
+    }
 });
+    
 </script>
 <h1>Are you the real Star Trek geek?</h1>
 
