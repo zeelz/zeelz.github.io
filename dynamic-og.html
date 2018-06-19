@@ -11,46 +11,131 @@
 	<meta property="og:image" content="http://drib.tech/fbsharetest/quiz_landing.jpg" >
 	<meta property="og:image:width" content="1200" >
 	<meta property="og:image:height" content="630" >
-
-</head>
-<body>
- <script>
+<script>
   window.fbAsyncInit = function() {
-    FB.init({
-      appId            : '116056278520917',
-      autoLogAppEvents : true,
-      xfbml            : true,
-      version          : 'v3.0'
-    });
-	FB.ui({
-	  method: 'share_open_graph',
-	  action_type: 'og.likes',
-	  action_properties: JSON.stringify({
-	    object:'https://developers.facebook.com/docs/javascript/examples',
-	  })
-	}, function(response){
-	  // Debug response (optional)
-	  console.log(response);
+	FB.init({
+	  appId            : '116056278520917',
+	  autoLogAppEvents : true,
+	  xfbml            : true,
+	  version          : 'v2.10'
 	});
+	FB.AppEvents.logPageView();
   };
 
   (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
+	 var js, fjs = d.getElementsByTagName(s)[0];
+	 if (d.getElementById(id)) {return;}
+	 js = d.createElement(s); js.id = id;
+	 js.src = "//connect.facebook.net/en_US/sdk.js";
+	 fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-	 
-
-    
 </script>
+</head>
+<body>
 <h1>Are you the real Star Trek geek?</h1>
+<p>
+Prove your Star Trek geekhood! Are you wise like Yoda or Jar Jar Binks?
+</p>
+<p>
+	<strong>
+		This is FB js share demo. For full article please visit: &quot;<a href="http://drib.tech/programming/dynamically-change-facebook-open-graph-meta-data-javascript" target="_blank">Dynamically change Facebook open graph meta data with JavaScript</a>&quot; .
+	</strong>
+</p>
+<form action="#" method="post" id="star_trek_quiz">
+	<dl>
+		<dt>James T Kirk - What does the 'T' stand for?</dt>
+		<dd><label><input name="answer" type="radio" value="Thomas">Thomas</label></dd>
+		<dd><label><input name="answer" type="radio" value="Titus">Titus</label></dd>
+		<dd><label><input name="answer" type="radio" value="Tiberius">Tiberius</label></dd>
+		<dd><label><input name="answer" type="radio" value="Tarquin">Tarquin</label></dd>
+	</dl>
 
+	<hr>
+	<input type="submit" value="Submit answer" onclick="return submitAndShare();">
+</form>
+<hr>
+<a href="#" onclick="return shareOriginal();">Share with original og:meta data</a>
+	
 	
 <script>
+function submitAndShare()
+{
+	// get the selected answer
+	var playerName = 'George L.';
+	var val = '';
+	var form = document.getElementById('star_trek_quiz');
+	var answers = form.elements['answer'];
+	
+	for(var i=0; i<answers.length; i++)
+	{
+		if(answers[i].checked)
+		{
+			val = answers[i].value;
+			break;
+		}
+	}
+	
+	var title = '';
+	var description = '';
+	var image = '';
+	switch(val)
+	{
+		case 'Tiberius':
+				title = playerName + ' is wise like Yoda!';
+				description = 'Congratulations! ' + playerName + ' is the champion of the StarTrek geekhood - and nobody can beat him. Or ... ? Click to play and prove to the ' + playerName + ' that you are as good as  him!';
+				image = 'http://drib.tech/fbsharetest/quiz_yoda.jpg';
+			break;
+		default:
+				title = playerName + ' is wise like Jar Jar Binks!';
+				description = playerName + 'is the champion of the StarTrek geekhood - NOT! Click to play and prove to the ' + playerName + ' that anybody is better then him!';
+				image = 'http://drib.tech/fbsharetest/quiz_jar_jar_binks.jpg';
+			break;
+	}
+	
+	
+	// and finally share it
+	
+	shareOverrideOGMeta(window.location.href,
+						title,
+						description,
+						image);
+	
+	return false;
+}
 
- 
+function shareOverrideOGMeta(overrideLink, overrideTitle, overrideDescription, overrideImage)
+{
+	FB.ui({
+		method: 'share_open_graph',
+		action_type: 'og.shares',
+		action_properties: JSON.stringify({
+			object: {
+				'og:url': overrideLink,
+				'og:title': overrideTitle,
+				'og:description': overrideDescription,
+				'og:image': overrideImage
+			}
+		})
+	},
+	function (response) {
+	// Action after response
+	});
+}
+
+function shareOriginal()
+{
+	FB.ui({
+		method: 'share',
+		href: window.location.href
+	},
+	function (response) {
+	// Action after response
+	});
+	
+	return false;
+}
+
 </script>
 </body>
 </html>
+
