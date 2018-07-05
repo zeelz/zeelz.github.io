@@ -1,5 +1,7 @@
 <?php 
 
-print_r( $_GET['courseScoreData']);
+// print_r( $_GET['courseScoreData']);
+
+echo "string is it";
 
 ?>
