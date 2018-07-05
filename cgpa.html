@@ -6,8 +6,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <meta name="description" content="Demo project">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- <link rel="stylesheet" href="bootstrap.min.css" > -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="bootstrap.min.css" > -->		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<style type="text/css">
 			.container {
 				margin-top: 50px;
@@ -25,6 +25,12 @@
 
 			    text-shadow: 3px 2px 0 #b6daf3;
 			}
+			.cgpa-wrapper .cgpa input {
+				border: none;
+			    width: 100%;
+			    text-align: center;
+			}
+
 			.cgpa-wrapper p:not(.cgpa) {
 				color:  #CCC;
 				font-size: 2em;
@@ -120,7 +126,8 @@
 			<div class="row">
 				<div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3">
 					<div class="cgpa-wrapper text-center">
-						<p class="cgpa"></p>
+						<p class="cgpa">
+						<input type="text" disabled=""></p>
 						<p>Your CGPA</p>
 					</div>
 					
@@ -222,7 +229,7 @@
 
 					<div class="footer">
 						<hr>
-						<p>Zeelz CGPA Calculator - Computer Science, University of Port Harcourt. <span>Post feedback and bugs at <a href="">GitHub</a></span> </p>
+						<p>Zeelz CGPA Calculator - Computer Science, University of Port Harcourt. <span>Post feedback and bugs at <a href="https://github.com/zeelz/zeelz.github.io">GitHub</a></span> </p>
 					</div>
 
 				</div>
@@ -231,16 +238,15 @@
 			
 		</div>
 
-		
-
 		<!-- <script type="text/javascript" src="jquery-3.1.1.min.js"></script> -->
 		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script> -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
-
 
 		<!-- <script type="text/javascript" src="bootstrap.min.js"></script> -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+		
 		<script type="text/javascript">
 			// $('#grader-button, .cgpa-wrapper').hide();
 			var courseScoreData = [];
@@ -273,22 +279,18 @@
 					data: {'courseScoreData': courseScoreData}
 				}).done(function(data){
 					console.log(data);
-					$(".cgpa").text(data);
-					$(".cgpa-wrapper").show();					
-					
-					function animateCGPA(){
-						$('.cgpa').text( Number($('.cgpa').text()) +1 );
+					// $(".cgpa input").val(data);
+					var cgpa = parseFloat(data).toFixed(2);
 
-					}
-					// var timerHandle = setInterval(animateCGPA, 1000);
-
-					while( false ){
-						if ( Number($('.cgpa').text()) == Number(data) ) {						
-							//clearInterval(timerHandle);
-							//break;
-						}
-						console.log( Number($('.cgpa').text()) );
-					}
+					var domAttributes = anime({
+					  targets: '.cgpa input',
+					  value: cgpa,
+					  round: 100,
+					  easing: 'easeInOutSine',
+					  duration: 2000
+					});
+					$(".cgpa-wrapper").show();
+										
 
 				});
 				e.preventDefault();
