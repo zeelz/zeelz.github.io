@@ -4,7 +4,8 @@
 		<title>Zeelz CGPA Calculator - Computer Science, University of Port Harcourt</title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	    <meta name="description" content="Demo project">
+	    <meta name="description" content="Made with love by Keme Kenneth (Zeelz). CGPA Calculator - Computer Science, University of Port Harcourt.">
+	    <meta name="author" content="Keme Kenneth">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- <link rel="stylesheet" href="bootstrap.min.css" > -->		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -29,6 +30,7 @@
 				border: none;
 			    width: 100%;
 			    text-align: center;
+		        background: transparent;
 			}
 
 			.cgpa-wrapper p:not(.cgpa) {
@@ -116,6 +118,14 @@
 				text-decoration: none;
 				color: #5bb85b;
 			}
+			.footer span.heart {
+				font-style: normal;
+				color: #5bb85b;
+    			font-size: 1.1em;
+			}
+			.heading {
+				margin-bottom: 30px;
+			}
 
 
 
@@ -130,7 +140,10 @@
 						<input type="text" disabled=""></p>
 						<p>Your CGPA</p>
 					</div>
-					
+					<div class="heading text-center">
+						<h1>Know Your Current CGPA</h1>
+						<p>Select a course and enter its corresponding score/grade</p>
+					</div>
 					<form class="form-horizontal" action="gradecalculator.php" method="post" id="courses-form">
 						
 						<div class="form-group joined-inputs">
@@ -229,7 +242,7 @@
 
 					<div class="footer">
 						<hr>
-						<p>Zeelz CGPA Calculator - Computer Science, University of Port Harcourt. <span>Post feedback and bugs at <a href="https://github.com/zeelz/zeelz.github.io">GitHub</a></span> </p>
+						<p>Made with <span class="heart">&hearts;</span> by <strong title="Keme Kenneth">Zeelz.</strong> CGPA Calculator - Computer Science, University of Port Harcourt. <span><br>Post feedback and bugs at <a href="https://github.com/zeelz/zeelz.github.io">GitHub</a></span> </p>
 					</div>
 
 				</div>
@@ -278,8 +291,12 @@
 					method: 'post',
 					data: {'courseScoreData': courseScoreData}
 				}).done(function(data){
+
+					/* Before animejs
 					console.log(data);
-					// $(".cgpa input").val(data);
+					$(".cgpa input").val(data);
+					*/
+
 					var cgpa = parseFloat(data).toFixed(2);
 
 					var domAttributes = anime({
@@ -291,7 +308,8 @@
 					});
 					$(".cgpa-wrapper").show();
 										
-
+					/* Scroll to 100 top */
+					scrollTo(0,50);
 				});
 				e.preventDefault();
 			})
