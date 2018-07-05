@@ -1,3 +1,0 @@
-
-echo "string is it";
-
