@@ -1,5 +1,5 @@
 <?php 
 
-print_r( $_POST['courseScoreData']);
+print_r( $_GET['courseScoreData']);
 
 ?>

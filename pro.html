@@ -18,7 +18,7 @@
 		$('#grader-button').on('click', function(e){
 			$.ajax({
 				url: "pro.php",
-				method: 'post',
+				method: 'get',
 				data: {'courseScoreData': "Data is essential"}
 			}).done(function(data){
 				console.log(data);
