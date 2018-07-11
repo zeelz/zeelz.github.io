@@ -63,7 +63,7 @@
 					margin: 5px 0;
 				}
 				.cgpa-wrapper .cgpa {
-				    font-size: 10em;
+				    font-size: 9em;
 				}
 				.cgpa-wrapper {
 				    margin-top: 0px!important;
@@ -75,7 +75,7 @@
 				display: none;
 				box-shadow: 2px 2px 0px 1px #a3cff5;
 			}
-			.invalid-feedback {
+			.invalid-feedback-select, .invalid-feedback-input {
 				display: none;
 			}
 			#grade-holder {
@@ -126,9 +126,6 @@
 			.heading {
 				margin-bottom: 30px;
 			}
-
-
-
 		</style>
 	</head>
 	<body>
@@ -152,7 +149,7 @@
 									<option disabled selected>Select Course</option>
 									<option disabled>YEAR 1</option>
 								    <option value="ges100">GES 100</option>
-								    <option selected="" value="ges101">GES 101</option>
+								    <option value="ges101">GES 101</option>
 								    <option value="fsb101">FSB 101</option>
 								    <option value="phy101">PHY 101</option>
 								    <option value="ges102">GES 102</option>
@@ -216,15 +213,14 @@
 							</div>
 							<div class="col-md-5">		
 								<label class="sr-only">Exam Score</label>
-								<input type="number" pattern="[0-9]{-2}" name="score" value="87" id="score" class="form-control" placeholder="Exam Score:">
-											
+								<input type="number" pattern="[0-9]{-2}" name="score" id="score" class="form-control" placeholder="Exam Score:">
 							</div>
 							<div class="col-md-2 button-w">
 								<input type="submit" value="Add Course" class="btn btn-success btn-block">
 							</div>
-							<p class="invalid-feedback text-center text-danger">Enter a valid score</p>
+							<p class="invalid-feedback-input text-center text-danger">Enter a valid score</p>
+							<p class="invalid-feedback-select text-center text-danger">Select a course</p>
 						</div>
-
 						<div class="form-group">
 						</div>
 					</form>
@@ -244,11 +240,8 @@
 						<hr>
 						<p>Made with <span class="heart">&hearts;</span> by <strong title="Keme Kenneth">Zeelz.</strong> CGPA Calculator - Computer Science, University of Port Harcourt. <span><br>Post feedback and bugs at <a href="https://github.com/zeelz/zeelz.github.io">GitHub</a></span> </p>
 					</div>
-
 				</div>
-			</div>
-
-			
+			</div>			
 		</div>
 
 		<!-- <script type="text/javascript" src="jquery-3.1.1.min.js"></script> -->
@@ -261,15 +254,80 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
 		
 		<script type="text/javascript">
+
+/* --------------------- functions ------------------- */
+			function credit_unit(course){
+				var two_units = ["csc180","csc182","csc183","csc281","csc282","csc283","csc284","csc285","csc286","csc287","csc288","csc382","csc482","csc483","csc491","csc492","csc493","csc495","csc496","csc497","ges101","ges102","ges103","ges300","ges400","mth224", "phy102"];
+
+				three_units = ["chm130","csc280","csc394","csc395","csc480","csc481","csc486","csc494","csc498","csc396","csc397","fsb101","ges100","mth124","mth114","mth120","mth210","mth250","mth270","phy101","phy351","phy112","sta160","sta260","sta262","sta370"];
+			// phy102 > 2 cu
+				var cu;
+				if (course == "fsc2c1" || course == "phy103") {	
+					cu = 1;
+				} else if (two_units.indexOf(course) !== -1) { // JS equivalent of in_array()
+					cu = 2;
+				} else if (three_units.indexOf(course) !== -1) {		
+					cu = 3;
+				} else if (course == "mth110") {		
+					cu = 4;
+				} else if (course == "csc470") {		
+					cu = 6;
+				} else if (course == "csc300") {		
+					cu = 9;
+				}
+				return cu;
+			}
+
+			function quality_point(course, grade){
+
+				var gp;
+				switch(true){
+					case (grade >= 70):
+						gp = 5; 
+						break; 
+					case (grade >= 60):
+						gp = 4;
+						break; 
+					case (grade >= 50):
+						gp = 3;
+						break;
+					case (grade >= 45):
+						gp = 2;
+						break; 
+					case (grade >= 40):
+						gp = 1;
+						break;
+					default:
+						gp = 0;
+						break;
+				}
+				return credit_unit(course) * gp;
+			}
+
+			function total_credit_units(courses){
+				var tcu = 0;
+				for (var i = 0; i < courses.length; i++) {
+					course_grade = courses[i].split("-");
+					tcu += credit_unit(course_grade[0]);
+				}
+				return tcu;
+			}
+/* --------------------- */
 			// $('#grader-button, .cgpa-wrapper').hide();
 			var courseScoreData = [];
 			$('#courses-form').on('submit', function(e){
 				var courses = $('#courses').val();
 				var score = $('#score').val();
-				if ( score.length > 2 ) {
-					$(".invalid-feedback").show();
-				} else  {				
-					$(".invalid-feedback").hide();
+
+				if ( courses == "" || courses == null ) {
+					$(".invalid-feedback-select").show();
+				}
+				else if ( score == "" || score == null || score.length > 2 ) {
+					$(".invalid-feedback-input").show();
+					$(".invalid-feedback-select").hide()
+				}  else {				
+					$(".invalid-feedback-select").hide();
+					$(".invalid-feedback-input").hide();
 					$('#grade-holder ul').prepend("<li class='list-group-item'>" +courses.toUpperCase()+ " - " +score+ "</li>");
 
 					var deleteHandle = $("<a>").html("X");
@@ -286,33 +344,38 @@
 			});
 
 			$('#grader-button').on('click', function(e){
-				$.ajax({
-					url: "gradecalculator.php",
-					method: 'post',
-					data: {'courseScoreData': courseScoreData}
-				}).done(function(data){
 
-					/* Before animejs
-					console.log(data);
-					$(".cgpa input").val(data);
-					*/
+				// var courses =  ["phy101-23", "ges103-23", "mth110-76"];
 
-					var cgpa = parseFloat(data).toFixed(2);
+				var total_qp = 0;
+				for(var i = 0; i < courseScoreData.length; i++) {
+					var course_grade = courseScoreData[i].split("-");
+					total_qp += quality_point(course_grade[0], Number(course_grade[1]));
+				}
+				var raw_cgpa =  total_qp / total_credit_units(courseScoreData);
+				var cgpa = parseFloat(raw_cgpa).toFixed(2);
+				
+				// data
+				/* Before animejs
+				console.log(data);
+				$(".cgpa input").val(data);
+				*/
 
-					var domAttributes = anime({
-					  targets: '.cgpa input',
-					  value: cgpa,
-					  round: 100,
-					  easing: 'easeInOutSine',
-					  duration: 2000
-					});
-					$(".cgpa-wrapper").show();
-										
-					/* Scroll to 100 top */
-					scrollTo(0,50);
+				var domAttributes = anime({
+				  targets: '.cgpa input',
+				  value: cgpa,
+				  round: 100,
+				  easing: 'easeInOutSine',
+				  duration: 2000
 				});
+				$(".cgpa-wrapper").show();
+									
+				/* Scroll to 100 top */
+				scrollTo(0,50);
+			
 				e.preventDefault();
-			})
+			});
+
 			$("#grade-holder").on('click','a', function(e){
 				//Remove the li from ul element
 				$(this).parent().remove();
