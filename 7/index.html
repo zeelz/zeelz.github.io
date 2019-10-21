@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fresh Start Counter</title>
+    <title>Seven</title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Maven+Pro" rel="stylesheet">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <style type="text/css">
@@ -16,6 +16,7 @@
 			background: -webkit-linear-gradient(to right, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
 			background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
+            font-family: 'Maven Pro';
         }
         .container {
             margin: 15% auto 0;
@@ -35,7 +36,6 @@
             letter-spacing: 1px;
             margin: 0;
             padding: 10px;
-            font-family: 'Maven Pro';
             border: solid 1px #FFF;
             border-radius: 5px;
             display: inline-block;
@@ -54,7 +54,7 @@
             bottom: 5%;
             box-shadow: -4px 4px 1px 0px #36eb7d;
         }
-        a.reset:hover {
+        .swal-button:hover, a.reset:hover {
 			box-shadow: none;
         }
 
@@ -62,27 +62,49 @@
             font-size: 1.3em;
             letter-spacing: 1px;
             padding: 5px;
-            font-family: 'Maven Pro';
+            /* font-family: 'Maven Pro'; */
             color: #FFF;
         }
         #author a {
             text-decoration: none;
+        }
+
+        .sweetbox{
+            color: red;
+        }
+
+        .swal-modal {
+            width: 350px!important;
+
+        }
+        .swal-text {
+            font-size: 1.4rem!important;
+        }
+        .swal-content input {
+            padding: 16px 10px;
+        }
+        .swal-button {
+            background: green;
+            color: white;
+            box-shadow: -3px 3px 0 #36eb7d;
+
+            /* box-shadow: -4px 4px 1px 0px #36eb7d; */
         }
         @media (max-width: 768px){
             .container {
                 margin: 27% auto 0;
             }
 
-            a.reset {
-        	text-decoration: none;
-        	color: #11998e;
-            font-size: 1em;
-            background-color: #FFF;
-            text-transform: uppercase;
-            padding: 10px 20px;
-            margin-top: 20px;
-            position: initial;
-        }
+                a.reset {
+            	text-decoration: none;
+            	color: #11998e;
+                font-size: 1em;
+                background-color: #FFF;
+                text-transform: uppercase;
+                padding: 10px 20px;
+                margin-top: 20px;
+                position: initial;
+            }
         }
 
     </style>
@@ -100,6 +122,7 @@
 
 
 </div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
 	function twoDigits(num){
@@ -108,13 +131,44 @@
 		return num;
 	}
 
+    var bd = new Date("2019-10-21T00:00:00");
+
 	
+    var reset = document.querySelector('.reset');
+	reset.addEventListener('click', function(e){
+        var resetSalt = Math.floor(Math.random(199,1000) * 1000);
+        swal({
+            title: "What is the reset key?",
+            content: {
+                element: "input",
+                attributes: {
+                  placeholder: `What's key + ${resetSalt}?`,
+                  type: "text",
+                }
+            }
+        })
+        .then(authenticated => {
+            if(authenticated == resetSalt + 199 ){
+                bd = new Date();
+                swal("Date reset!",{
+                    icon: 'success'
+                });
+            }
+            else {
+                swal("Incorrect reset key!",{
+                    icon: 'error'
+                });
+            }
+        });
+		e.preventDefault();
+	});
+
 	var fullCircle = false;
 
 	function showTime(){
 
 		var now = new Date();
-		var bd = new Date("2019-09-28T00:00:00");
+		// var bd = new Date("2019-10-19T00:00:00");
 
 		// var diff = bd.getTime() - now.getTime() + 7*(1000*60*60*24);
 		if(fullCircle){ // now - sep
